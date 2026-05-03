@@ -1,23 +1,23 @@
 /*
- * lilly keymap — Left-hand-"sole" QWERTZ für Lily58 Pro
+ * lilly keymap — Left-hand-"sole" DE-QWERTZ für Lily58 Pro
  * ─────────────────────────────────────────────────────────
  * Konzept:
  *   • Linke Hand = "sole" (Haupt-Hand): Navigation, Mods, Layer,
  *     Makros → rechte Hand bleibt frei für Maus/Stylus.
  *   • Trotzdem beidhändig ausgelegt für normales Tippen.
- *   • QWERTZ (Y↔Z getauscht).
- *   • Gaming-freundlich (WASD, Zahlen, Space, Shift, Ctrl
- *     bleiben an gewohnter Position).
+ *   • DE-QWERTZ (OS auf Deutsch eingestellt → HID-Keycodes
+ *     erzeugen automatisch korrekte DE-Zeichen).
+ *   • Gaming-freundlich (WASD, Zahlen, Space links, Shift, Ctrl
+ *     an gewohnter Position).
  *   • Makro-Layer für Photoshop/GIMP, Video-Editing, etc.
  *   • Split-Keyboard- & Touch-Typing-Anfänger freundlich
  *     durch logische Layer-Struktur und Kommentare.
  *
  * Layer-Übersicht:
- *   0 – BASE:   QWERTZ tippen
+ *   0 – BASE:   DE-QWERTZ tippen
  *   1 – LOWER:  Navigation (Pfeile, Home, End…), F-Tasten,
  *               Mediensteuerung → linker Daumen
- *   2 – RAISE:  Symbole, Sonderzeichen + Kreativ-Makros
- *               → rechter Daumen
+ *   2 – RAISE:  Kreativ-Makros + Sonderzeichen → rechter Daumen
  *
  * Makros (definiert in /macros):
  *   UNDO, REDO, COPY, PASTE, CUT, SAVE, SEL_ALL,
@@ -25,12 +25,17 @@
  *   ZOOM_IN, ZOOM_OUT, FIT_SCREEN, ADD_EDIT, RIPPLE_DEL
  *
  * Daumen-Cluster:
- *   Links:  LGUI | LALT | LOWER(mo1) | SPACE
- *   Rechts: RET  | BSPC | RAISE(mo2) | RGUI
- *   → Space liegt am linken Daumen – optimal zum Spielen
+ *   Links:  ⌘ | ⌥ | LOWER(🖐) | ␣
+ *   Rechts: ↵ | ⌫ | RAISE(🖐) | ⌘
+ *   → Space am linken Daumen – optimal zum Spielen
  *     und für Daumen-Anfänger.
  *   → Enter & Backspace am rechten Daumen – logisch für
  *     beidhändiges Tippen.
+ *
+ * ♥ WICHTIG ♥  Dieses Layout setzt DE-Tastaturlayout im
+ *   Betriebssystem voraus!  Die HID-Scancodes werden erst
+ *   vom OS in die korrekten deutschen Zeichen übersetzt
+ *   (Y→Z, Z→Y, [→Ü, ]→+, ;→Ö, '→Ä, ---→ß, `→^, usw.)
  */
 
 #include <behaviors.dtsi>
@@ -232,6 +237,84 @@
                 , <&macro_release &kp LSHFT>
                 ;
         };
+
+        /* ── DE-spezifische Sonderzeichen (per Makro) ── */
+        macro_de_paragraph: macro_de_paragraph {
+            compatible = "zmk,behavior-macro";
+            label = "PARAGRAPH";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp N3>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
+
+        macro_de_dquote: macro_de_dquote {
+            compatible = "zmk,behavior-macro";
+            label = "DQUOTE";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp N2>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
+
+        macro_de_ampersand: macro_de_ampersand {
+            compatible = "zmk,behavior-macro";
+            label = "AMPERSAND";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp N6>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
+
+        macro_de_slash: macro_de_slash {
+            compatible = "zmk,behavior-macro";
+            label = "SLASH";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp N7>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
+
+        macro_de_degree: macro_de_degree {
+            compatible = "zmk,behavior-macro";
+            label = "DEGREE";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp GRAVE>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
+
+        macro_de_equal: macro_de_equal {
+            compatible = "zmk,behavior-macro";
+            label = "EQUAL_DE";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp N0>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
+
+        macro_de_question: macro_de_question {
+            compatible = "zmk,behavior-macro";
+            label = "QUESTION";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp MINUS>
+                , <&macro_release &kp LSHFT>
+                ;
+        };
     };
 
     /*
@@ -241,37 +324,45 @@
         compatible = "zmk,keymap";
 
         /* ================================================
-         * LAYER 0: BASE – QWERTZ (beidhändig)
+         * LAYER 0: BASE – DE-QWERTZ (beidhändig)
          * ================================================
-         * Linke Hand:    primäre Tasten, Modifier, Layer
-         * Rechte Hand:   sekundäre Tasten, Enter, Bspc
+         * OS auf DEUTSCH eingestellt → die HID-Scancodes
+         * werden automatisch in deutsche Zeichen übersetzt:
          *
-         * Daumen links:  GUI | ALT | LOWER | SPACE
-         * Daumen rechts: RET | BSPC| RAISE | GUI
+         *   HID Y → Z   HID Z → Y   HID [ → Ü
+         *   HID ] → +   HID ; → Ö   HID ' → Ä
+         *   HID - → ß   HID ` → ^
          *
          * ┌───┬───┬───┬───┬───┬───┐     ┌───┬───┬───┬───┬───┬───┐
-         * │ESC│ 1 │ 2 │ 3 │ 4 │ 5 │     │ 6 │ 7 │ 8 │ 9 │ 0 │ ` │
+         * │ESC│ 1 │ 2 │ 3 │ 4 │ 5 │     │ 6 │ 7 │ 8 │ 9 │ 0 │ ^ │
          * ├───┼───┼───┼───┼───┼───┤     ├───┼───┼───┼───┼───┼───┤
-         * │TAB│ Q │ W │ E │ R │ T │     │ Z │ U │ I │ O │ P │ - │
+         * │TAB│ Q │ W │ E │ R │ T │     │ Z │ U │ I │ O │ P │ ß │
          * ├───┼───┼───┼───┼───┼───┤     ├───┼───┼───┼───┼───┼───┤
-         * │CTL│ A │ S │ D │ F │ G │     │ H │ J │ K │ L │ ; │ ' │
+         * │CTL│ A │ S │ D │ F │ G │     │ H │ J │ K │ L │ Ö │ Ä │
          * ├───┼───┼───┼───┼───┼───┼──┬──┼───┼───┼───┼───┼───┼───┤
-         * │SFT│ Y │ X │ C │ V │ B │ [│ ]│ N │ M │ , │ . │ / │SFT│
+         * │SFT│ Y │ X │ C │ V │ B │ Ü│ +│ N │ M │ , │ . │ - │SFT│
          * └───┴───┴───┴───┴───┴───┴──┴──┴───┴───┴───┴───┴───┴───┘
          *          ┌───┬───┬───┬───┐     ┌───┬───┬───┬───┐
-         *          │GUI│ALT│LWR│SPC│     │RET│BSP│RSE│GUI│
+         *          │⌘  │⌥  │LWR│␣  │     │↵  │⌫  │RSE│⌘  │
          *          └───┴───┴───┴───┘     └───┴───┴───┴───┘
          *
-         * QWERTZ: Z→Y getauscht (Z links oben, Y links unten).
-         * WASD:   bleibt an Position (W=oben, A=home, S=home, D=home).
-         * Space:  linker Daumen → Gaming + Touch-Typing.
+         *   Y (HID Z)  = deutsch Y (unten links)
+         *   Z (HID Y)  = deutsch Z (oben rechts, nach T)
+         *   Ü (HID [)  = Ü (neben P)
+         *   Ö (HID ;)  = Ö (neben L)
+         *   Ä (HID ')  = Ä (neben Ö)
+         *   ß (HID -)  = ß (neben 0)
+         *   ^ (HID `)  = ^ (neben 0)
+         *
+         *   WASD: bleibt an Position (W=oben, A=home, S=home, D=home).
+         *   Space: linker Daumen → Gaming + Touch-Typing.
          */
         default_layer {
             bindings = <
 &kp ESC   &kp N1    &kp N2    &kp N3    &kp N4    &kp N5                      &kp N6   &kp N7    &kp N8    &kp N9    &kp N0    &kp GRAVE
-&kp TAB   &kp Q     &kp W     &kp E     &kp R     &kp T                       &kp Z    &kp U     &kp I     &kp O     &kp P     &kp MINUS
+&kp TAB   &kp Q     &kp W     &kp E     &kp R     &kp T                       &kp Y    &kp U     &kp I     &kp O     &kp P     &kp MINUS
 &kp LCTRL &kp A     &kp S     &kp D     &kp F     &kp G                       &kp H    &kp J     &kp K     &kp L     &kp SEMI  &kp SQT
-&kp LSHFT &kp Y     &kp X     &kp C     &kp V     &kp B  &kp LBKT   &kp RBKT &kp N    &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT
+&kp LSHFT &kp Z     &kp X     &kp C     &kp V     &kp B  &kp LBKT   &kp RBKT &kp N    &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT
                         &kp LGUI &kp LALT &mo 1    &kp SPACE  &kp RET  &mo 2   &kp BSPC &kp RGUI
             >;
 
@@ -282,9 +373,10 @@
          * LAYER 1: LOWER – Navigation, F-Tasten, Medien
          * ================================================
          * Linker Daumen hält LOWER → Linke Hand:
-         *   • Pfeiltasten + Navi-Block (Home, End, PgUp, PgDn)
+         *   • Pfeiltasten + Navi-Block (↑ ↓ ← →, Home, End,
+         *     PgUp, PgDn, Pos1, Ende)
          *   • F1–F12 für Spiele/Programme
-         *   • Mediensteuerung (Play, Lautstärke)
+         *   • Mediensteuerung (Play/Pause, Prev, Next)
          * Rechte Hand bleibt frei für Maus!
          *
          * Gaming: Pfeile + F-Tasten + ESC griffbereit links.
@@ -292,14 +384,14 @@
          * ┌───┬───┬───┬───┬───┬───┐     ┌───┬───┬───┬───┬───┬───┐
          * │ F1│ F2│ F3│ F4│ F5│ F6│     │ F7│ F8│ F9│F10│F11│F12│
          * ├───┼───┼───┼───┼───┼───┤     ├───┼───┼───┼───┼───┼───┤
-         * │ ` │HOME│ UP│END│PGU│TAB│     │F13│F14│F15│F16│F17│F18│
+         * │ ^ │POS│ ↑ │END│BILD│TAB│     │TRN│TRN│TRN│TRN│TRN│TRN│
          * ├───┼───┼───┼───┼───┼───┤     ├───┼───┼───┼───┼───┼───┤
-         * │CAP│LFT│DWN│RGT│PGD│INS│     │   │ ← │ ↓ │ ↑ │ → │   │
+         * │CAP│ ← │ ↓ │ → │BILD↓│EINF│     │TRN│ ← │ ↓ │ ↑ │ → │TRN│
          * ├───┼───┼───┼───┼───┼───┼──┬──┼───┼───┼───┼───┼───┼───┤
-         * │   │   │   │   │   │   │  │  │   │   │PRV│PLY│NXT│   │
+         * │TRN│TRN│TRN│TRN│TRN│TRN│TRN│TRN│TRN│TRN│⏮ │⏯ │⏭ │TRN│
          * └───┴───┴───┴───┴───┴───┴──┴──┴───┴───┴───┴───┴───┴───┘
          *          ┌───┬───┬───┬───┐     ┌───┬───┬───┬───┐
-         *          │TRN│TRN│LWR│   │     │TRN│TRN│RSE│TRN│
+         *          │TRN│TRN│LWR│TRN│     │TRN│TRN│RSE│TRN│
          *          └───┴───┴───┴───┘     └───┴───┴───┴───┘
          */
         lower_layer {
@@ -315,38 +407,52 @@
         };
 
         /* ================================================
-         * LAYER 2: RAISE – Symbole + Kreativ-Makros
+         * LAYER 2: RAISE – Kreativ-Makros + Sonderzeichen
          * ================================================
          * Rechter Daumen hält RAISE → Linke Hand = Makros!
-         * Alle wichtigen Shortcuts für Photoshop, GIMP,
-         * Video-Editing usw. sind auf der LINKEN Seite
-         * (rechte Hand bedient Maus/Stylus).
+         * Alle Shortcuts für Photoshop, GIMP, Video-Editing
+         * sind auf der LINKEN Seite (rechte Hand bedient
+         * Maus/Stylus).
          *
          * Linke Seite (Makros):
-         *   UNDO → REDO → COPY → PASTE → CUT → SAVE
-         *   ZOOM- → ZOOM+ → FIT → DUP → FREE-T → STAMP
-         *   NEU-L → MERGE → BRH- → BRH+ → LYR↑ → LYR↓
+         *   ↩    ↩    📋   📋   ✂   💾
+         *   🔍-  🔍+  📐  📄  ✨  🖨
+         *   📑  📋  [  ]  —  —
+         *   🎬  🗑  —  —  —  —
          *
-         * Rechte Seite (Symbole / Sonderzeichen):
-         *   ` ~ ! @ # $ % ^ & * ( ) _ - + = { } [ ] | \
+         * Rechte Seite (DE-Sonderzeichen per Makro):
+         *   ^(°)  (leer) "  §  $  %
+         *   &  /  (  )  =  ?
+         *   _  -  +  =  {  }
+         *   —  —  —  —  \  |
+         *
+         * Legende:
+         *   ↩ = UNDO   ↩ = REDO   📋 = COPY   📋 = PASTE
+         *   ✂ = CUT   💾 = SAVE   🔍- = ZOOM-  🔍+ = ZOOM+
+         *   📐 = FIT   📄 = DUP   ✨ = FREE-T  🖨 = STAMP
+         *   📑 = NEW   [ = BR-    ] = BR+   🎬 = ADD EDIT
+         *   🗑 = RIPPLE DEL
          *
          * ┌───┬───┬───┬───┬───┬───┐     ┌───┬───┬───┬───┬───┬───┐
-         * │UND│RED│CPY│PST│CUT│SAV│     │ ` │ ~ │ ! │ @ │ # │ $ │
+         * │↩  │↩  │📋 │📋 │✂  │💾 │     │ ^ │   │ " │ § │ $ │ % │
          * ├───┼───┼───┼───┼───┼───┤     ├───┼───┼───┼───┼───┼───┤
-         * │ZO-│ZO+│FIT│DUP│FRT│STA│     │ % │ ^ │ & │ * │ ( │ ) │
+         * │🔍-│🔍+│📐 │📄 │✨ │🖨 │     │ & │ / │ ( │ ) │ = │ ? │
          * ├───┼───┼───┼───┼───┼───┤     ├───┼───┼───┼───┼───┼───┤
-         * │NLR│MRG│BRD│BRI│LYU│LYD│     │ _ │ - │ + │ = │ { │ } │
+         * │📑 │📋*│ [ │ ] │TRN│TRN│     │ _ │ - │ + │ = │ { │ } │
          * ├───┼───┼───┼───┼───┼───┼──┬──┼───┼───┼───┼───┼───┼───┤
-         * │ADD│RPD│SEL│   │   │   │  │  │   │   │ [ │ ] │ \ │ | │
+         * │🎬 │🗑 │TRN│TRN│TRN│TRN│TRN│TRN│TRN│TRN│ [ │ ] │ \ │ | │
          * └───┴───┴───┴───┴───┴───┴──┴──┴───┴───┴───┴───┴───┴───┘
          *          ┌───┬───┬───┬───┐     ┌───┬───┬───┬───┐
          *          │TRN│TRN│LWR│TRN│     │TRN│TRN│RSE│TRN│
          *          └───┴───┴───┴───┘     └───┴───┴───┴───┘
+         *
+         *   * Hinweis: SEL_ALL (Strg+A) ist auch hier,
+         *     da es oft vor Copy/Paste benötigt wird.
          */
         raise_layer {
             bindings = <
-&macro_undo &macro_redo &macro_copy  &macro_paste &macro_cut   &macro_save                    &kp GRAVE &kp TILDE &kp EXCL     &kp AT       &kp HASH     &kp DOLLAR
-&macro_zoom_out &macro_zoom_in &macro_fit_screen &macro_dup_layer &macro_free_transform &macro_merge_visible &kp PRCNT &kp CARET &kp AMPS     &kp STAR     &kp LPAR     &kp RPAR
+&macro_undo &macro_redo &macro_copy     &macro_paste    &macro_cut      &macro_save                    &macro_de_degree &trans     &macro_de_dquote &macro_de_paragraph &kp DOLLAR     &kp PRCNT
+&macro_zoom_out &macro_zoom_in &macro_fit_screen &macro_dup_layer &macro_free_transform &macro_merge_visible &macro_de_ampersand &macro_de_slash &kp LPAR &kp RPAR &macro_de_equal &macro_de_question
 &macro_new_layer &macro_sel_all   &kp LBKT &kp RBKT &trans  &trans                         &kp UNDER &kp MINUS &kp KP_PLUS &kp EQUAL    &kp LBRC     &kp RBRC
 &macro_add_edit &macro_ripple_del &trans    &trans    &trans    &trans  &trans   &trans  &trans    &trans     &kp LBKT     &kp RBKT     &kp BSLH     &kp PIPE
                         &trans    &trans    &mo 1    &trans     &trans  &mo 2  &trans    &trans
